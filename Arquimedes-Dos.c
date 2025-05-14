@@ -6,6 +6,8 @@
 #include <openssl/ssl.h>
 #include <openssl/err.h>
 #include <netdb.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
 
 char *target_host = "example.com";
 int target_port = 443;
