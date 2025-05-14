@@ -8,4 +8,4 @@ cd Arquimedes-Dos
 clang -o arquimedes arquimedes-Dos.c -lssl -lcrypto -lpthread 
 
 ## Rodando o DoS:
-./arquimedes -I <IP do site> -p <PORT> -t <threads>
+./arquimedes -I (IP do site) -p (Porta) -t (threads) 
