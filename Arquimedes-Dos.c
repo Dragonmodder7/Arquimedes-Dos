@@ -91,9 +91,9 @@ int main(int argc, char *argv[]) {
     }
 
     printf("╔═══════════════════════════════╗\n");
-    printf("║     𖤛 Arquimedes DoS 𖤛        ║\n");
-    printf("║   By: Jhon Landembeguer       ║\n");
-    printf("║   Team: Família Flodder       ║\n");
+    printf("║     𖤛 Arquimedes DoS 𖤛             ║\n");
+    printf("║   By: Jhon Landembeguer             ║\n");
+    printf("║   Team: Família Flodder Techno      ║\n");
     printf("╚═══════════════════════════════╝\n\n");
 
     pthread_t tid[threads];
