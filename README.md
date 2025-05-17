@@ -1,11 +1,12 @@
-# Arquimedes-Dos 2.0
+# Arquimedes-Dos 3.0
 
 ## Instalação:
 git clone https://github.com/Dragonmodder7/Arquimedes-Dos.git
+
 cd Arquimedes-Dos
 
 ## Compilar o código:
-clang -o arquimedes Arquimedes-Dos.c -lssl -lcrypto -lpthread
+clang arquimedes.c -o arquimedes
 
-## Rodando o DoS:
-./arquimedes -I (domínio do site) -p (porta) -t (threads) -l (IP de origem pro ataque, pode ser um ip de proxy list) -lp (porta do Ip origem do ataque) 
+## Rodando a Tool:
+./arquimedes
