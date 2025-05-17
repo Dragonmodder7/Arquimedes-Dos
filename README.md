@@ -8,4 +8,4 @@ cd Arquimedes-Dos
 clang -o arquimedes Arquimedes-Dos.c -lssl -lcrypto -lpthread
 
 ## Rodando o DoS:
-./arquimedes -I (ip) -p (porta) -t (threads) -l (IP de origem pro ataque, pode ser um ip de proxy list) -lp (porta do Ip origem do ataque) 
+./arquimedes -I (domínio do site) -p (porta) -t (threads) -l (IP de origem pro ataque, pode ser um ip de proxy list) -lp (porta do Ip origem do ataque) 
