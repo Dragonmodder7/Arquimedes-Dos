@@ -6,7 +6,7 @@ git clone https://github.com/Dragonmodder7/Arquimedes-Dos.git
 cd Arquimedes-Dos
 
 ## Compilar o código:
-clang arquimedes.c -o arquimedes
+gcc Arquimedes-DoS.c -o arquimedes -lpthread
 
 ## Rodando a Tool:
 ./arquimedes
