@@ -1,7 +1,7 @@
 # Arquimedes-Dos 3.0
 
 ## Instalação:
-git clone https://github.com/Dragonmodder7/Arquimedes-Dos.git
+git clone https://github.com/JhonLamdenberguer/Arquimedes-Dos.git
 
 cd Arquimedes-Dos
 
